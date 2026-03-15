@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google 账户</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Google Sans', 'Roboto', 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #fff;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            color: #202124;
+            line-height: 1.5;
+        }
+
+        /* 演示警告条 - 已删除 */
+
+        .container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+        }
+
+        .card {
+            width: 100%;
+            max-width: 450px;
+            padding: 48px 40px 36px;
+            border: 1px solid #dadce0;
+            border-radius: 8px;
+            text-align: center;
+            background: white;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .logo {
+            margin-bottom: 16px;
+        }
+
+        .logo svg {
+            width: 75px;
+            height: 24px;
+        }
+
+        h1 {
+            font-size: 24px;
+            font-weight: 400;
+            margin-bottom: 8px;
+            color: #202124;
+        }
+
+        .subtitle {
+            font-size: 16px;
+            color: #5f6368;
+            margin-bottom: 24px;
+        }
+
+        /* 账户选择器样式 */
+        .account-list {
+            margin: 24px 0;
+            text-align: left;
+        }
+
+        .account-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            margin-bottom: 8px;
+            border: 1px solid #dadce0;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .account-item:hover {
+            background-color: #f8f9fa;
+            border-color: #1a73e8;
+        }
+
+        .account-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #1a73e8;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            margin-right: 12px;
+            font-weight: 500;
+        }
+
+        .account-info {
+            flex: 1;
+        }
+
+        .account-name {
+            font-size: 14px;
+            font-weight: 500;
+            color: #202124;
+        }
+
+        .account-email {
+            font-size: 12px;
+            color: #5f6368;
+        }
+
+        /* 表单样式 */
+        .form-group {
+            margin-bottom: 24px;
+            text-align: left;
+        }
+
+        .input-field {
+            width: 100%;
+            height: 54px;
+            padding: 13px 15px;
+            font-size: 16px;
+            border: 1px solid #dadce0;
+            border-radius: 4px;
+            outline: none;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        .input-field:focus {
+            border-color: #1a73e8;
+            border-width: 2px;
+            padding: 12px 14px;
+        }
+
+        .input-hint {
+            font-size: 12px;
+            color: #5f6368;
+            margin-top: 6px;
+        }
+
+        .error-message {
+            color: #d93025;
+            font-size: 12px;
+            margin-top: 6px;
+            display: none;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .error-message.show {
+            display: flex;
+        }
+
+        /* 按钮样式 */
+        .btn-group {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 32px;
+        }
+
+        .btn {
+            padding: 10px 24px;
+            font-size: 14px;
+            font-weight: 500;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            outline: none;
+            font-family: inherit;
+        }
+
+        .btn-text {
+            background: transparent;
+            color: #1a73e8;
+            padding: 10px 16px;
+        }
+
+        .btn-text:hover {
+            background-color: rgba(26, 115, 232, 0.04);
+        }
+
+        .btn-primary {
+            background-color: #1a73e8;
+            color: white;
+            box-shadow: 0 1px 2px 0 rgba(60,64,67,0.3);
+        }
+
+        .btn-primary:hover {
+            background-color: #1557b0;
+            box-shadow: 0 1px 3px rgba(60,64,67,0.3), 0 4px 8px 3px rgba(60,64,67,0.15);
+        }
+
+        .btn-secondary {
+            background-color: white;
+            color: #1a73e8;
+            border: 1px solid #dadce0;
+        }
+
+        .btn-secondary:hover {
+            background-color: #f8f9fa;
+            border-color: #1a73e8;
+        }
+
+        /* 链接样式 */
+        .link {
+            color: #1a73e8;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 0;
+            font-family: inherit;
+        }
+
+        .link:hover {
+            text-decoration: underline;
+        }
+
+        .helper-text {
+            font-size: 14px;
+            color: #5f6368;
+            margin: 16px 0;
+            text-align: left;
+            line-height: 1.5;
+        }
+
+        /* 步骤指示器 */
+        .step-indicator {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+
+        .step-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #dadce0;
+        }
+
+        .step-dot.active {
+            background: #1a73e8;
+        }
+
+        /* 密码要求列表 */
+        .requirements {
+            list-style: none;
+            text-align: left;
+            font-size: 12px;
+            color: #5f6368;
+            margin: 12px 0;
+            padding-left: 4px;
+        }
+
+        .requirements li {
+            margin: 4px 0;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .requirements li.met {
+            color: #188038;
+        }
+
+        .requirements li.met::before {
+            content: "✓";
+            font-weight: bold;
+        }
+
+        .requirements li:not(.met)::before {
+            content: "○";
+            opacity: 0.5;
+        }
+
+        /* 页脚 */
+        footer {
+            padding: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            color: #5f6368;
+            background-color: #f8f9fa;
+            margin-top: auto;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 32px;
+        }
+
+        .footer-links a {
+            color: #5f6368;
+            text-decoration: none;
+        }
+
+        .footer-links a:hover {
+            color: #202124;
+        }
+
+        .language-selector {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        /* 隐藏/显示视图 */
+        .view {
+            display: none;
+        }
+
+        .view.active {
+            display: block;
+        }
+
+        /* 加载动画 */
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #1a73e8;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* 成功提示 */
+        .success-icon {
+            width: 48px;
+            height: 48px;
+            background: #188038;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin: 0 auto 16px;
+        }
+
+        /* 移动端适配 */
+        @media (max-width: 600px) {
+            .card {
+                border: none;
+                padding: 24px;
+                box-shadow: none;
+            }
+            
+            footer {
+                flex-direction: column;
+                gap: 16px;
+                text-align: center;
+            }
+            
+            .btn-group {
+                flex-direction: column-reverse;
+                gap: 12px;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+        }
+
+        /* 头像上传预览 */
+        .avatar-upload {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: #e8eaed;
+            margin: 0 auto 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            border: 2px dashed #dadce0;
+        }
+
+        .avatar-upload:hover {
+            border-color: #1a73e8;
+            background: #f8f9fa;
+        }
+
+        .avatar-upload input {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        /* 分隔线 */
+        .divider {
+            border-top: 1px solid #dadce0;
+            margin: 24px 0;
+            position: relative;
+        }
+
+        .divider-text {
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: white;
+            padding: 0 16px;
+            font-size: 12px;
+            color: #5f6368;
+        }
+    </style>
+</head>
+<body>
+    <!-- 红色警告条已删除 -->
+
+    <div class="container">
+        <!-- 1. 欢迎/选择账户视图 -->
+        <div id="view-welcome" class="view active">
+            <div class="card">
+                <div class="logo">
+                    <svg viewBox="0 0 272 92" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M115.75 47.18c0 12.77-9.99 22.18-22.25 22.18s-22.25-9.41-22.25-22.18C71.25 34.32 81.24 25 93.5 25s22.25 9.32 22.25 22.18zm-9.74 0c0-7.98-5.79-13.44-12.51-13.44S80.99 39.2 80.99 47.18c0 7.9 5.79 13.44 12.51 13.44s12.51-5.55 12.51-13.44z" fill="#EA4335"/>
+                        <path d="M163.75 47.18c0 12.77-9.99 22.18-22.25 22.18s-22.25-9.41-22.25-22.18c0-12.85 9.99-22.18 22.25-22.18s22.25 9.32 22.25 22.18zm-9.74 0c0-7.98-5.79-13.44-12.51-13.44s-12.51 5.46-12.51 13.44c0 7.9 5.79 13.44 12.51 13.44s12.51-5.55 12.51-13.44z" fill="#FBBC05"/>
+                        <path d="M209.75 26.34v39.82c0 16.38-9.66 23.07-21.08 23.07-10.75 0-17.22-7.19-19.66-13.07l8.48-3.53c1.51 3.61 5.21 7.87 11.17 7.87 7.31 0 11.84-4.51 11.84-13v-3.19h-.34c-2.18 2.69-6.38 5.04-11.68 5.04-11.09 0-21.25-9.66-21.25-22.09 0-12.52 10.16-22.26 21.25-22.26 5.29 0 9.49 2.35 11.68 4.96h.34v-3.61h9.25zm-8.56 20.92c0-7.81-5.21-13.52-11.84-13.52-6.72 0-12.35 5.71-12.35 13.52 0 7.73 5.63 13.36 12.35 13.36 6.63 0 11.84-5.63 11.84-13.36z" fill="#4285F4"/>
+                        <path d="M225 3v65h-9.5V3h9.5z" fill="#34A853"/>
+                        <path d="M262.02 54.48l7.56 5.04c-2.44 3.61-8.32 9.83-18.48 9.83-12.6 0-22.01-9.74-22.01-22.18 0-13.19 9.49-22.18 20.92-22.18 11.51 0 17.14 9.16 18.98 14.11l1.01 2.52-29.65 12.28c2.27 4.45 5.8 6.72 10.75 6.72 4.96 0 8.4-2.44 10.92-6.14zm-23.27-7.98l19.82-8.23c-1.09-2.77-4.37-4.7-8.23-4.7-4.95 0-11.84 4.37-11.59 12.93z" fill="#EA4335"/>
+                        <path d="M35.29 41.41V32H67c.31 1.64.47 3.58.47 5.68 0 7.06-1.93 15.79-8.15 22.01-6.05 6.3-13.78 9.66-24.02 9.66C16.32 69.35.36 53.89.36 34.91.36 15.93 16.32.47 35.3.47c10.5 0 17.98 4.12 23.6 9.49l-6.64 6.64c-4.03-3.78-9.49-6.72-16.97-6.72-13.86 0-24.7 11.17-24.7 25.03 0 13.86 10.84 25.03 24.7 25.03 8.99 0 14.11-3.61 17.39-6.89 2.66-2.66 4.41-6.46 5.1-11.65l-22.49.01z" fill="#4285F4"/>
+                    </svg>
+                </div>
+                <h1>欢迎</h1>
+                <p class="subtitle">选择您的账户或创建新账户</p>
+                
+                <div class="account-list" id="saved-accounts">
+                    <!-- 动态生成的账户列表 -->
+                </div>
+
+                <div class="divider">
+                    <span class="divider-text">或</span>
+                </div>
+
+                <button class="btn btn-secondary" style="width: 100%; margin-top: 8px;" onclick="showView('view-login')">
+                    使用其他账户
+                </button>
+            </div>
+        </div>
+
+        <!-- 2. 登录视图 -->
+        <div id="view-login" class="view">
+            <div class="card">
+                <div class="logo">
+                    <svg viewBox="0 0 272 92" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M115.75 47.18c0 12.77-9.99 22.18-22.25 22.18s-22.25-9.41-22.25-22.18C71.25 34.32 81.24 25 93.5 25s22.25 9.32 22.25 22.18zm-9.74 0c0-7.98-5.79-13.44-12.51-13.44S80.99 39.2 80.99 47.18c0 7.9 5.79 13.44 12.51 13.44s12.51-5.55 12.51-13.44z" fill="#EA4335"/>
+                        <path d="M163.75 47.18c0 12.77-9.99 22.18-22.25 22.18s-22.25-9.41-22.25-22.18c0-12.85 9.99-22.18 22.25-22.18s22.25 9.32 22.25 22.18zm-9.74 0c0-7.98-5.79-13.44-12.51-13.44s-12.51 5.46-12.51 13.44c0 7.9 5.79 13.44 12.51 13.44s12.51-5.55 12.51-13.44z" fill="#FBBC05"/>
+                        <path d="M209.75 26.34v39.82c0 16.38-9.66 23.07-21.08 23.07-10.75 0-17.22-7.19-19.66-13.07l8.48-3.53c1.51 3.61 5.21 7.87 11.17 7.87 7.31 0 11.84-4.51 11.84-13v-3.19h-.34c-2.18 2.69-6.38 5.04-11.68 5.04-11.09 0-21.25-9.66-21.25-22.09 0-12.52 10.16-22.26 21.25-22.26 5.29 0 9.49 2.35 11.68 4.96h.34v-3.61h9.25zm-8.56 20.92c0-7.81-5.21-13.52-11.84-13.52-6.72 0-12.35 5.71-12.35 13.52 0 7.73 5.63 13.36 12.35 13.36 6.63 0 11.84-5.63 11.84-13.36z" fill="#4285F4"/>
+                        <path d="M225 3v65h-9.5V3h9.5z" fill="#34A853"/>
+                        <path d="M262.02 54.48l7.56 5.04c-2.44 3.61-8.32 9.83-18.48 9.83-12.6 0-22.01-9.74-22.01-22.18 0-13.19 9.49-22.18 20.92-22.18 11.51 0 17.14 9.16 18.98 14.11l1.01 2.52-29.65 12.28c2.27 4.45 5.8 6.72 10.75 6.72 4.96 0 8.4-2.44 10.92-6.14zm-23.27-7.98l19.82-8.23c-1.09-2.77-4.37-4.7-8.23-4.7-4.95 0-11.84 4.37-11.59 12.93z" fill="#EA4335"/>
+                        <path d="M35.29 41.41V32H67c.31 1.64.47 3.58.47 5.68 0 7.06-1.93 15.79-8.15 22.01-6.05 6.3-13.78 9.66-24.02 9.66C16.32 69.35.36 53.89.36 34.91.36 15.93 16.32.47 35.3.47c10.5 0 17.98 4.12 23.6 9.49l-6.64 6.64c-4.03-3.78-9.49-6.72-16.97-6.72-13.86 0-24.7 11.17-24.7 25.03 0 13.86 10.84 25.03 24.7 25.03 8.99 0 14.11-3.61 17.39-6.89 2.66-2.66 4.41-6.46 5.1-11.65l-22.49.01z" fill="#4285F4"/>
+                    </svg>
+                </div>
+                <h1>登录</h1>
+                <p class="subtitle">使用您的 Google 账户</p>
+                
+                <form id="login-form" onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <input type="email" id="login-email" class="input-field" placeholder="电子邮件或电话号码" required autocomplete="email">
+                        <div class="error-message" id="login-email-error">
+                            <span>请输入有效的电子邮件地址</span>
+                        </div>
+                    </div>
+                    
+                    <div style="text-align: left; margin-bottom: 24px;">
+                        <button type="button" class="link" onclick="showView('view-forgot')">忘记了电子邮件？</button>
+                    </div>
+                    
+                    <p class="helper-text">
+                        这不是您的计算机？请使用访客模式以私密方式登录。<br>
+                        <button type="button" class="link" onclick="alert('访客模式说明：这是演示功能')">了解详情</button>
+                    </p>
+                    
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-text" onclick="showView('view-register-step1')">创建账户</button>
+                        <button type="submit" class="btn btn-primary" id="login-next-btn">下一步</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- 3. 输入密码视图 -->
+        <div id="view-password" class="view">
+            <div class="card">
+                <div class="logo">
+                    <svg viewBox="0 0 272 92" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M115.75 47.18c0 12.77-9.99 22.18-22.25 22.18s-22.25-9.41-22.25-22.18C71.25 34.32 81.24 25 93.5 25s22.25 9.32 22.25 22.18zm-9.74 0c0-7.98-5.79-13.44-12.51-13.44S80.99 39.2 80.99 47.18c0 7.9 5.79 13.44 12.51 13.44s12.51-5.55 12.51-13.44z" fill="#EA4335"/>
+                        <path d="M163.75 47.18c0 12.77-9.99 22.18-22.25 22.18s-22.25-9.41-22.25-22.18c0-12.85 9.99-22.18 22.25-22.18s22.25 9.32 22.25 22.18zm-9.74 0c0-7.98-5.79-13.44-12.51-13.44s-12.51 5.46-12.51 13.44c0 7.9 5.79 13.44 12.51 13.44s12.51-5.55 12.51-13.44z" fill="#FBBC05"/>
+                        <path d="M209.75 26.34v39.82c0 16.38-9.66 23.07-21.08 23.07-10.75 0-17.22-7.19-19.66-13.07l8.48-3.53c1.51 3.61 5.21 7.87 11.17 7.87 7.31 0 11.84-4.51 11.84-13v-3.19h-.34c-2.18 2.69-6.38 5.04-11.68 5.04-11.09 0-21.25-9.66-21.25-22.09 0-12.52 10.16-22.26 21.25-22.26 5.29 0 9.49 2.35 11.68 4.96h.34v-3.61h9.25zm-8.56 20.92c0-7.81-5.21-13.52-11.84-13.52-6.72 0-12.35 5.71-12.35 13.52 0 7.73 5.63 13.36 12.35 13.36 6.63 0 11.84-5.63 11.84-13.36z" fill="#4285F4"/>
+                        <path d="M225 3v65h-9.5V3h9.5z" fill="#34A853"/>
+                        <path d="M262.02 54.48l7.56 5.04c-2.44 3.61-8.32 9.83-18.48 9.83-12.6 0-22.01-9.74-22.01-22.18 0-13.19 9.49-22.18 20.92-22.18 11.51 0 17.14 9.16 18.98 14.11l1.01 2.52-29.65 12.28c2.27 4.45 5.8 6.72 10.75 6.72 4.96 0 8.4-2.44 10.92-6.14zm-23.27-7.98l19.82-8.23c-1.09-2.77-4.37-4.7-8.23-4.7-4.95 0-11.84 4.37-11.59 12.93z" fill="#EA4335"/>
+                        <path d="M35.29 41.41V32H67c.31 1.64.47 3.58.47 5.68 0 7.06-1.93 15.79-8.15 22.01-6.05 6.3-13.78 9.66-24.02 9.66C16.32 69.35.36 53.89.36 34.91.36 15.93 16.32.47 35.3.47c10.5 0 17.98 4.12 23.6 9.49l-6.64 6.64c-4.03-3.78-9.49-6.72-16.97-6.72-13.86 0-24.7 11.17-24.7 25.03 0 13.86 10.84 25.03 24.7 25.03 8.99 0 14.11-3.61 17.39-6.89 2.66-2.66 4.41-6.46 5.1-11.65l-22.49.01z" fill="#4285F4"/>
+                    </svg>
+                </div>
+                <h1>欢迎</h1>
+                <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 24px;">
+                    <div class="account-avatar" style="width: 24px; height: 24px; font-size: 12px;" id="password-avatar">U</div>
+                    <span id="display-email" style="color: #5f6368; font-size: 14px;"></span>
+                    <button type="button" class="link" style="font-size: 12px;" onclick="showView('view-login')">更改</button>
+                </div>
+                
+                <form onsubmit="handlePasswordSubmit(event)">
+                    <div class="form-group">
+                        <input type="password" id="login-password" class="input-field" placeholder="输入您的密码" required>
+                        <div class="error-message" id="password-error">
+                            <span>密码错误。请重试。</span>
+                        </div>
+                    </div>
+                    
+                    <div style="text-align: left; margin-bottom: 24px;">
+                        <button type="button" class="link" onclick="showView('view-forgot-password')">忘记了密码？</button>
+                    </div>
+                    
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-text" onclick="showView('view-login')">返回</button>
+                        <button type="submit" class="btn btn-primary">下一步</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- 4. 注册步骤1：基本信息 -->
+        <div id="view-register-step1" class="view">
+            <div class="card">
+                <div class="step-indicator">
+                    <div class="step-dot active"></div>
+                    <div class="step-dot"></div>
+                    <div class="step-dot"></div>
+                </div>
+                <div class="logo">
+                    <svg viewBox="0 0 272 92" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M115.75 47.18c0 12.77-9.99 22.18-22.25 22.18s-22.25-9.41-22.25-22.18C71.25 34.32 81.24 25 93.5 25s22.25 9.32 22.25 22.18zm-9.74 0c0-7.98-5.79-13.44-12.51-13.44S80.99 39.2 80.99 47.18c0 7.9 5.79 13.44 12.51 13.44s12.51-5.55 12.51-13.44z" fill="#EA4335"/>
+                        <path d="M163.75 47.18c0 12.77-9.99 22.18-22.25 22.18s-22.25-9.41-22.25-22.18c0-12.85 9.99-22.18 22.25-22.18s22.25 9.32 22.25 22.18zm-9.74 0c0-7.98-5.79-13.44-12.51-13.44s-12.51 5.46-12.51 13.44c0 7.9 5.79 13.44 12.51 13.44s12.51-5.55 12.51-13.44z" fill="#FBBC05"/>
+                        <path d="M209.75 26.34v39.82c0 16.38-9.66 23.07-21.08 23.07-10.75 0-17.22-7.19-19.66-13.07l8.48-3.53c1.51 3.61 5.21 7.87 11.17 7.87 7.31 0 11.84-4.51 11.84-13v-3.19h-.34c-2.18 2.69-6.38 5.04-11.68 5.04-11.09 0-21.25-9.66-21.25-22.09 0-12.52 10.16-22.26 21.25-22.26 5.29 0 9.49 2.35 11.68 4.96h.34v-3.61h9.25zm-8.56 20.92c0-7.81-5.21-13.52-11.84-13.52-6.72 0-12.35 5.71-12.35 13.52 0 7.73 5.63 13.36 12.35 13.36 6.63 0 11.84-5.63 11.84-13.36z" fill="#4285F4"/>
+                        <path d="M225 3v65h-9.5V3h9.5z" fill="#34A853"/>
+                        <path d="M262.02 54.48l7.56 5.04c-2.44 3.61-8.32 9.83-18.48 9.83-12.6 0-22.01-9.74-22.01-22.18 0-13.19 9.49-22.18 20.92-22.18 11.51 0 17.14 9.16 18.98 14.11l1.01 2.52-29.65 12.28c2.27 4.45 5.8 6.72 10.75 6.72 4.96 0 8.4-2.44 10.92-6.14zm-23.27-7.98l19.82-8.23c-1.09-2.77-4.37-4.7-8.23-4.7-4.95 0-11.84 4.37-11.59 12.93z" fill="#EA4335"/>
+                        <path d="M35.29 41.41V32H67c.31 1.64.47 3.58.47 5.68 0 7.06-1.93 15.79-8.15 22.01-6.05 6.3-13.78 9.66-24.02 9.66C16.32 69.35.36 53.89.36 34.91.36 15.93 16.32.47 35.3.47c10.5 0 17.98 4.12 23.6 9.49l-6.64 6.64c-4.03-3.78-9.49-6.72-16.97-6.72-13.86 0-24.7 11.17-24.7 25.03 0 13.86 10.84 25.03 24.7 25.03 8.99 0 14.11-3.61 17.39-6.89 2.66-2.66 4.41-6.46 5.1-11.65l-22.49.01z" fill="#4285F4"/>
+                    </svg>
+                </div>
+                <h1>创建 Google 账户</h1>
+                <p class="subtitle">输入您的姓名</p>
+                
+                <form onsubmit="handleRegisterStep1(event)">
+                    <div class="form-group">
+                        <input type="text" id="reg-firstname" class="input-field" placeholder="姓氏（可选）" style="margin-bottom: 12px;">
+                        <input type="text" id="reg-lastname" class="input-field" placeholder="名字" required>
+                    </div>
+                    
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-text" onclick="showView('view-login')">返回</button>
+                        <button type="submit" class="btn btn-primary">下一步</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- 5. 注册步骤2：基本信息 -->
+        <div id="view-register-step2" class="view">
+            <div class="card">
+                <div class="step-indicator">
+                    <div class="step-dot active"></div>
+                    <div class="step-dot active"></div>
+                    <div class="step-dot"></div>
+                </div>
+                <div class="logo">
+                    <svg viewBox="0 0 272 92" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M115.75 47.18c0 12.77-9.99 22.18-22.25 22.18s-22.25-9.41-22.25-22.18C71.25 34.32 81.24 25 93.5 25s22.25 9.32 22.25 22.18zm-9.74 0c0-7.98-5.79-13.44-12.51-13.44S80.99 39.2 80.99 47.18c0 7.9 5.79 13.44 12.51 13.44s12.51-5.55 12.51-13.44z" fill="#EA4335"/>
+                        <path d="M163.75 47.18c0 12.77-9.99 22.18-22.25 22.18s-22.25-9.41-22.25-22.18c0-12.85 9.99-22.18 22.25-22.18s22.25 9.32 22.25 22.18zm-9.74 0c0-7.98-5.79-13.44-12.51-13.44s-12.51 5.46-12.51 13.44c0 7.9 5.79 13.44 12.51 13.44s12.51-5.55 12.51-13.44z" fill="#FBBC05"/>
+                        <path d="M209.75 26.34v39.82c0 16.38-9.66 23.07-21.08 23.07-10.75 0-17.22-7.19-19.66-13.07l8.48-3.53c1.51 3.61 5.21 7.87 11.17 7.87 7.31 0 11.84-4.51 11.84-13v-3.19h-.34c-2.18 2.69-6.38 5.04-11.68 5.04-11.09 0-21.25-9.66-21.25-22.09 0-12.52 10.16-22.26 21.25-22.26 5.29 0 9.49 2.35 11.68 4.96h.34v-3.61h9.25zm-8.56 20.92c0-7.81-5.21-13.52-11.84-13.52-6.72 0-12.35 5.71-12.35 13.52 0 7.73 5.63 13.36 12.35 13.36 6.63 0 11.84-5.63 11.84-13.36z" fill="#4285F4"/>
+                        <path d="M225 3v65h-9.5V3h9.5z" fill="#34A853"/>
+                        <path d="M262.02 54.48l7.56 5.04c-2.44 3.61-8.32 9.83-18.48 9.83-12.6 0-22.01-9.74-22.01-22.18 0-13.19 9.49-22.18 20.92-22.18 11.51 0 17.14 9.16 18.98 14.11l1.01 2.52-29.65 12.28c2.27 4.45 5.8 6.72 10.75 6.72 4.96 0 8.4-2.44 10.92-6.14zm-23.27-7.98l19.82-8.23c-1.09-2.77-4.37-4.7-8.23-4.7-4.95 0-11.84 4.37-11.59 12.93z" fill="#EA4335"/>
+                        <path d="M35.29 41.41V32H67c.31 1.64.47 3.58.47 5.68 0 7.06-1.93 15.79-8.15 22.01-6.05 6.3-13.78 9.66-24.02 9.66C16.32 69.35.36 53.89.36 34.91.36 15.93 16.32.47 35.3.47c10.5 0 17.98 4.12 23.6 9.49l-6.64 6.64c-4.03-3.78-9.49-6.72-16.97-6.72-13.86 0-24.7 11.17-24.7 25.03 0 13.86 10.84 25.03 24.7 25.03 8.99 0 14.11-3.61 17.39-6.89 2.66-2.66 4.41-6.46 5.1-11.65l-22.49.01z" fill="#4285F4"/>
+                    </svg>
+                </div>
+                <h1>基本信息</h1>
+                <p class="subtitle">输入您的生日和性别</p>
+                
+                <form onsubmit="handleRegisterStep2(event)">
+                    <div class="form-group">
+                        <div style="display: flex; gap: 12px; margin-bottom: 12px;">
+                            <select id="reg-year" class="input-field" style="flex: 1;" required>
+                                <option value="">年</option>
+                                <!-- 动态生成年份 -->
+                            </select>
+                            <select id="reg-month" class="input-field" style="flex: 1;" required>
+                                <option value="">月</option>
+                                <option value="1">1月</option>
+                                <option value="2">2月</option>
+                                <option value="3">3月</option>
+                                <option value="4">4月</option>
+                                <option value="5">5月</option>
+                                <option value="6">6月</option>
+                                <option value="7">7月</option>
+                                <option value="8">8月</option>
+                                <option value="9">9月</option>
+                                <option value="10">10月</option>
+                                <option value="11">11月</option>
+                                <option value="12">12月</option>
+                            </select>
+                            <select id="reg-day" class="input-field" style="flex: 1;" required>
+                                <option value="">日</option>
+                                <!-- 动态生成日期 -->
+                            </select>
+                        </div>
+                        <select id="reg-gender" class="input-field" required>
+                            <option value="">性别</option>
+                            <option value="female">女性</option>
+                            <option value="male">男性</option>
+                            <option value="other">不愿透露</option>
+                            <option value="custom">自定义</option>
+                        </select>
+                    </div>
+                    
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-text" onclick="showView('view-register-step1')">返回</button>
+                        <button type="submit" class="btn btn-primary">下一步</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- 6. 注册步骤3：创建邮箱和密码 -->
+        <div id="view-register-step3" class="view">
+            <div class="card">
+                <div class="step-indicator">
+                    <div class="step-dot active"></div>
+                    <div class="step-dot active"></div>
+                    <div class="step-dot active"></div>
+                </div>
+                <div class="logo">
+                    <svg viewBox="0 0 272 92" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M115.75 47.18c0 12.77-9.99 22.18-22.25 22.18s-22.25-9.41-22.25-22.18C71.25 34.32 81.24 25 93.5 25s22.25 9.32 22.25 22.18zm-9.74 0c0-7.98-5.79-13.44-12.51-13.44S80.99 39.2 80.99 47.18c0 7.9 5.79 13.44 12.51 13.44s12.51-5.55 12.51-13.44z" fill="#EA4335"/>
+                        <path d="M163.75 47.18c0 12.77-9.99 22.18-22.25 22.18s-22.25-9.41-22.25-22.18c0-12.85 9.99-22.18 22.25-22.18s22.25 9.32 22.25 22.18zm-9.74 0c0-7.98-5.79-13.44-12.51-13.44s-12.51 5.46-12.51 13.44c0 7.9 5.79 13.44 12.51 13.44s12.51-5.55 12.51-13.44z" fill="#FBBC05"/>
+                        <path d="M209.75 26.34v39.82c0 16.38-9.66 23.07-21.08 23.07-10.75 0-17.22-7.19-19.66-13.07l8.48-3.53c1.51 3.61 5.21 7.87 11.17 7.87 7.31 0 11.84-4.51 11.84-13v-3.19h-.34c-2.18 2.69-6.38 5.04-11.68 5.04-11.09 0-21.25-9.66-21.25-22.09 0-12.52 10.16-22.26 21.25-22.26 5.29 0 9.49 2.35 11.68 4.96h.34v-3.61h9.25zm-8.56 20.92c0-7.81-5.21-13.52-11.84-13.52-6.72 0-12.35 5.71-12.35 13.52 0 7.73 5.63 13.36 12.35 13.36 6.63 0 11.84-5.63 11.84-13.36z" fill="#4285F4"/>
+                        <path d="M225 3v65h-9.5V3h9.5z" fill="#34A853"/>
+                        <path d="M262.02 54.48l7.56 5.04c-2.44 3.61-8.32 9.83-18.48 9.83-12.6 0-22.01-9.74-22.01-22.18 0-13.19 9.49-22.18 20.92-22.18 11.51 0 17.14 9.16 18.98 14.11l1.01 2.52-29.65 12.28c2.27 4.45 5.8 6.72 10.75 6.72 4.96 0 8.4-2.44 10.92-6.14zm-23.27-7.98l19.82-8.23c-1.09-2.77-4.37-4.7-8.23-4.7-4.95 0-11.84 4.37-11.59 12.93z" fill="#EA4335"/>
+                        <path d="M35.29 41.41V32H67c.31 1.64.47 3.58.47 5.68 0 7.06-1.93 15.79-8.15 22.01-6.05 6.3-13.78 9.66-24.02 9.66C16.32 69.35.36 53.89.36 34.91.36 15.93 16.32.47 35.3.47c10.5 0 17.98 4.12 23.6 9.49l-6.64 6.64c-4.03-3.78-9.49-6.72-16.97-6.72-13.86 0-24.7 11.17-24.7 25.03 0 13.86 10.84 25.03 24.7 25.03 8.99 0 14.11-3.61 17.39-6.89 2.66-2.66 4.41-6.46 5.1-11.65l-22.49.01z" fill="#4285F4"/>
+                    </svg>
+                </div>
+                <h1>创建您的邮箱地址</h1>
+                <p class="subtitle" id="suggested-email" style="font-size: 14px; color: #5f6368;"></p>
+                
+                <form onsubmit="handleRegisterStep3(event)">
+                    <div class="form-group">
+                        <input type="email" id="reg-email" class="input-field" placeholder="用户名@gmail.com" required style="margin-bottom: 12px;">
+                        <input type="password" id="reg-password" class="input-field" placeholder="密码" required style="margin-bottom: 12px;" oninput="checkPasswordStrength(this.value)">
+                        <input type="password" id="reg-confirm-password" class="input-field" placeholder="确认密码" required>
+                        
+                        <ul class="requirements" id="password-requirements">
+                            <li id="req-length">至少 8 个字符</li>
+                            <li id="req-mix">包含字母、数字和符号的混合</li>
+                        </ul>
+                        
+                        <div class="error-message" id="reg-error">
+                            <span>密码不匹配或不符合要求</span>
+                        </div>
+                    </div>
+                    
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-text" onclick="showView('view-register-step2')">返回</button>
+                        <button type="submit" class="btn btn-primary">创建账户</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- 7. 注册成功 -->
+        <div id="view-register-success" class="view">
+            <div class="card">
+                <div class="success-icon">✓</div>
+                <h1>账户创建成功！</h1>
+                <p class="subtitle" id="success-message"></p>
+                <button class="btn btn-primary" style="margin-top: 24px;" onclick="showView('view-welcome')">转到登录页面</button>
+            </div>
+        </div>
+
+        <!-- 8. 忘记密码 -->
+        <div id="view-forgot" class="view">
+            <div class="card">
+                <div class="logo">
+                    <svg viewBox="0 0 272 92" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M115.75 47.18c0 12.77-9.99 22.18-22.25 22.18s-22.25-9.41-22.25-22.18C71.25 34.32 81.24 25 93.5 25s22.25 9.32 22.25 22.18zm-9.74 0c0-7.98-5.79-13.44-12.51-13.44S80.99 39.2 80.99 47.18c0 7.9 5.79 13.44 12.51 13.44s12.51-5.55 12.51-13.44z" fill="#EA4335"/>
+                        <path d="M163.75 47.18c0 12.77-9.99 22.18-22.25 22.18s-22.25-9.41-22.25-22.18c0-12.85 9.99-22.18 22.25-22.18s22.25 9.32 22.25 22.18zm-9.74 0c0-7.98-5.79-13.44-12.51-13.44s-12.51 5.46-12.51 13.44c0 7.9 5.79 13.44 12.51 13.44s12.51-5.55 12.51-13.44z" fill="#FBBC05"/>
+                        <path d="M209.75 26.34v39.82c0 16.38-9.66 23.07-21.08 23.07-10.75 0-17.22-7.19-19.66-13.07l8.48-3.53c1.51 3.61 5.21 7.87 11.17 7.87 7.31 0 11.84-4.51 11.84-13v-3.19h-.34c-2.18 2.69-6.38 5.04-11.68 5.04-11.09 0-21.25-9.66-21.25-22.09 0-12.52 10.16-22.26 21.25-22.26 5.29 0 9.49 2.35 11.68 4.96h.34v-3.61h9.25zm-8.56 20.92c0-7.81-5.21-13.52-11.84-13.52-6.72 0-12.35 5.71-12.35 13.52 0 7.73 5.63 13.36 12.35 13.36 6.63 0 11.84-5.63 11.84-13.36z" fill="#4285F4"/>
+                        <path d="M225 3v65h-9.5V3h9.5z" fill="#34A853"/>
+                        <path d="M262.02 54.48l7.56 5.04c-2.44 3.61-8.32 9.83-18.48 9.83-12.6 0-22.01-9.74-22.01-22.18 0-13.19 9.49-22.18 20.92-22.18 11.51 0 17.14 9.16 18.98 14.11l1.01 2.52-29.65 12.28c2.27 4.45 5.8 6.72 10.75 6.72 4.96 0 8.4-2.44 10.92-6.14zm-23.27-7.98l19.82-8.23c-1.09-2.77-4.37-4.7-8.23-4.7-4.95 0-11.84 4.37-11.59 12.93z" fill="#EA4335"/>
+                        <path d="M35.29 41.41V32H67c.31 1.64.47 3.58.47 5.68 0 7.06-1.93 15.79-8.15 22.01-6.05 6.3-13.78 9.66-24.02 9.66C16.32 69.35.36 53.89.36 34.91.36 15.93 16.32.47 35.3.47c10.5 0 17.98 4.12 23.6 9.49l-6.64 6.64c-4.03-3.78-9.49-6.72-16.97-6.72-13.86 0-24.7 11.17-24.7 25.03 0 13.86 10.84 25.03 24.7 25.03 8.99 0 14.11-3.61 17.39-6.89 2.66-2.66 4.41-6.46 5.1-11.65l-22.49.01z" fill="#4285F4"/>
+                    </svg>
+                </div>
+                <h1>查找您的电子邮件</h1>
+                <p class="subtitle">输入您的辅助邮箱或电话号码以查找您的 Google 账户</p>
+                
+                <form onsubmit="handleForgot(event)">
+                    <div class="form-group">
+                        <input type="text" class="input-field" placeholder="辅助邮箱或电话号码" required>
+                    </div>
+                    
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-text" onclick="showView('view-login')">返回</button>
+                        <button type="submit" class="btn btn-primary">下一步</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- 9. 忘记密码重设 -->
+        <div id="view-forgot-password" class="view">
+            <div class="card">
+                <div class="logo">
+                    <svg viewBox="0 0 272 92" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M115.75 47.18c0 12.77-9.99 22.18-22.25 22.18s-22.25-9.41-22.25-22.18C71.25 34.32 81.24 25 93.5 25s22.25 9.32 22.25 22.18zm-9.74 0c0-7.98-5.79-13.44-12.51-13.44S80.99 39.2 80.99 47.18c0 7.9 5.79 13.44 12.51 13.44s12.51-5.55 12.51-13.44z" fill="#EA4335"/>
+                        <path d="M163.75 47.18c0 12.77-9.99 22.18-22.25 22.18s-22.25-9.41-22.25-22.18c0-12.85 9.99-22.18 22.25-22.18s22.25 9.32 22.25 22.18zm-9.74 0c0-7.98-5.79-13.44-12.51-13.44s-12.51 5.46-12.51 13.44c0 7.9 5.79 13.44 12.51 13.44s12.51-5.55 12.51-13.44z" fill="#FBBC05"/>
+                        <path d="M209.75 26.34v39.82c0 16.38-9.66 23.07-21.08 23.07-10.75 0-17.22-7.19-19.66-13.07l8.48-3.53c1.51 3.61 5.21 7.87 11.17 7.87 7.31 0 11.84-4.51 11.84-13v-3.19h-.34c-2.18 2.69-6.38 5.04-11.68 5.04-11.09 0-21.25-9.66-21.25-22.09 0-12.52 10.16-22.26 21.25-22.26 5.29 0 9.49 2.35 11.68 4.96h.34v-3.61h9.25zm-8.56 20.92c0-7.81-5.21-13.52-11.84-13.52-6.72 0-12.35 5.71-12.35 13.52 0 7.73 5.63 13.36 12.35 13.36 6.63 0 11.84-5.63 11.84-13.36z" fill="#4285F4"/>
+                        <path d="M225 3v65h-9.5V3h9.5z" fill="#34A853"/>
+                        <path d="M262.02 54.48l7.56 5.04c-2.44 3.61-8.32 9.83-18.48 9.83-12.6 0-22.01-9.74-22.01-22.18 0-13.19 9.49-22.18 20.92-22.18 11.51 0 17.14 9.16 18.98 14.11l1.01 2.52-29.65 12.28c2.27 4.45 5.8 6.72 10.75 6.72 4.96 0 8.4-2.44 10.92-6.14zm-23.27-7.98l19.82-8.23c-1.09-2.77-4.37-4.7-8.23-4.7-4.95 0-11.84 4.37-11.59 12.93z" fill="#EA4335"/>
+                        <path d="M35.29 41.41V32H67c.31 1.64.47 3.58.47 5.68 0 7.06-1.93 15.79-8.15 22.01-6.05 6.3-13.78 9.66-24.02 9.66C16.32 69.35.36 53.89.36 34.91.36 15.93 16.32.47 35.3.47c10.5 0 17.98 4.12 23.6 9.49l-6.64 6.64c-4.03-3.78-9.49-6.72-16.97-6.72-13.86 0-24.7 11.17-24.7 25.03 0 13.86 10.84 25.03 24.7 25.03 8.99 0 14.11-3.61 17.39-6.89 2.66-2.66 4.41-6.46 5.1-11.65l-22.49.01z" fill="#4285F4"/>
+                    </svg>
+                </div>
+                <h1>更改密码</h1>
+                <p class="subtitle">为您的账户创建新密码</p>
+                
+                <form onsubmit="handlePasswordReset(event)">
+                    <div class="form-group">
+                        <input type="password" class="input-field" placeholder="新密码" required style="margin-bottom: 12px;">
+                        <input type="password" class="input-field" placeholder="确认新密码" required>
+                        <p class="input-hint">使用至少 8 个字符，包含字母、数字和符号</p>
+                    </div>
+                    
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-text" onclick="showView('view-password')">取消</button>
+                        <button type="submit" class="btn btn-primary">保存密码</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- 10. 登录成功/欢迎页 -->
+        <div id="view-logged-in" class="view">
+            <div class="card">
+                <div class="success-icon" style="background: #1a73e8;">👤</div>
+                <h1>欢迎回来！</h1>
+                <p class="subtitle" id="logged-in-email"></p>
+                <p style="color: #5f6368; font-size: 14px; margin: 16px 0;">您已成功登录（演示模式）</p>
+                <button class="btn btn-primary" style="margin-top: 24px;" onclick="logout()">退出登录</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="language-selector">
+            简体中文 (简体) ▼
+        </div>
+        <div class="footer-links">
+            <a href="#" onclick="alert('帮助页面（演示）')">帮助</a>
+            <a href="#" onclick="alert('隐私权政策（演示）')">隐私权</a>
+            <a href="#" onclick="alert('服务条款（演示）')">条款</a>
+        </div>
+    </footer>
+
+    <script>
+        // 模拟数据库
+        let users = JSON.parse(localStorage.getItem('demo_users')) || [];
+        let currentUser = null;
+        let tempRegData = {};
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            generateDateOptions();
+            renderSavedAccounts();
+            
+            // 检查是否有已登录用户
+            const loggedIn = localStorage.getItem('demo_logged_in');
+            if (loggedIn) {
+                const user = users.find(u => u.email === loggedIn);
+                if (user) {
+                    showLoggedIn(user);
+                }
+            }
+        });
+
+        // 视图切换
+        function showView(viewId) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.getElementById(viewId).classList.add('active');
+            
+            // 重置表单错误
+            document.querySelectorAll('.error-message').forEach(e => e.classList.remove('show'));
+        }
+
+        // 生成年份和日期选项
+        function generateDateOptions() {
+            const yearSelect = document.getElementById('reg-year');
+            const currentYear = new Date().getFullYear();
+            for (let i = currentYear; i >= currentYear - 100; i--) {
+                const option = document.createElement('option');
+                option.value = i;
+                option.textContent = i;
+                yearSelect.appendChild(option);
+            }
+
+            const daySelect = document.getElementById('reg-day');
+            for (let i = 1; i <= 31; i++) {
+                const option = document.createElement('option');
+                option.value = i;
+                option.textContent = i;
+                daySelect.appendChild(option);
+            }
+        }
+
+        // 渲染已保存的账户
+        function renderSavedAccounts() {
+            const container = document.getElementById('saved-accounts');
+            container.innerHTML = '';
+            
+            if (users.length === 0) {
+                container.style.display = 'none';
+                return;
+            }
+            
+            container.style.display = 'block';
+            users.forEach(user => {
+                const item = document.createElement('div');
+                item.className = 'account-item';
+                item.onclick = () => selectAccount(user);
+                item.innerHTML = `
+                    <div class="account-avatar">${user.name.charAt(0).toUpperCase()}</div>
+                    <div class="account-info">
+                        <div class="account-name">${user.name}</div>
+                        <div class="account-email">${user.email}</div>
+                    </div>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        // 选择账户
+        function selectAccount(user) {
+            currentUser = user;
+            document.getElementById('display-email').textContent = user.email;
+            document.getElementById('password-avatar').textContent = user.name.charAt(0).toUpperCase();
+            showView('view-password');
+        }
+
+        // 登录处理
+        function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value;
+            const errorDiv = document.getElementById('login-email-error');
+            
+            // 简单验证
+            if (!email.includes('@') || !email.includes('.')) {
+                errorDiv.classList.add('show');
+                return;
+            }
+            
+            errorDiv.classList.remove('show');
+            
+            // 检查是否已存在
+            const existingUser = users.find(u => u.email === email);
+            if (existingUser) {
+                selectAccount(existingUser);
+            } else {
+                // 新用户，转到密码页（模拟创建流程）
+                currentUser = { email: email, name: email.split('@')[0] };
+                document.getElementById('display-email').textContent = email;
+                document.getElementById('password-avatar').textContent = email.charAt(0).toUpperCase();
+                showView('view-password');
+            }
+        }
+
+        // 密码提交
+        function handlePasswordSubmit(e) {
+            e.preventDefault();
+            const password = document.getElementById('login-password').value;
+            const errorDiv = document.getElementById('password-error');
+            
+            if (password.length < 6) {
+                errorDiv.classList.add('show');
+                return;
+            }
+            
+            // 模拟登录成功
+            if (currentUser) {
+                if (!users.find(u => u.email === currentUser.email)) {
+                    // 新用户，保存
+                    currentUser.password = password; // 注意：真实环境绝不要这样存储密码！
+                    users.push(currentUser);
+                    localStorage.setItem('demo_users', JSON.stringify(users));
+                }
+                
+                localStorage.setItem('demo_logged_in', currentUser.email);
+                showLoggedIn(currentUser);
+            }
+        }
+
+        // 显示登录成功
+        function showLoggedIn(user) {
+            document.getElementById('logged-in-email').textContent = user.email;
+            showView('view-logged-in');
+        }
+
+        // 退出登录
+        function logout() {
+            localStorage.removeItem('demo_logged_in');
+            currentUser = null;
+            showView('view-welcome');
+            renderSavedAccounts();
+        }
+
+        // 注册步骤1
+        function handleRegisterStep1(e) {
+            e.preventDefault();
+            tempRegData.firstName = document.getElementById('reg-firstname').value;
+            tempRegData.lastName = document.getElementById('reg-lastname').value;
+            showView('view-register-step2');
+        }
+
+        // 注册步骤2
+        function handleRegisterStep2(e) {
+            e.preventDefault();
+            tempRegData.year = document.getElementById('reg-year').value;
+            tempRegData.month = document.getElementById('reg-month').value;
+            tempRegData.day = document.getElementById('reg-day').value;
+            tempRegData.gender = document.getElementById('reg-gender').value;
+            
+            // 生成建议邮箱
+            const suggested = `${tempRegData.lastName.toLowerCase()}.${tempRegData.firstName.toLowerCase()}@gmail.com`;
+            document.getElementById('suggested-email').textContent = `建议使用：${suggested}`;
+            document.getElementById('reg-email').value = suggested;
+            
+            showView('view-register-step3');
+        }
+
+        // 密码强度检查
+        function checkPasswordStrength(password) {
+            const reqLength = document.getElementById('req-length');
+            const reqMix = document.getElementById('req-mix');
+            
+            if (password.length >= 8) {
+                reqLength.classList.add('met');
+            } else {
+                reqLength.classList.remove('met');
+            }
+            
+            const hasLetter = /[a-zA-Z]/.test(password);
+            const hasNumber = /\d/.test(password);
+            const hasSymbol = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+            
+            if (hasLetter && hasNumber && hasSymbol) {
+                reqMix.classList.add('met');
+            } else {
+                reqMix.classList.remove('met');
+            }
+        }
+
+        // 注册步骤3
+        function handleRegisterStep3(e) {
+            e.preventDefault();
+            const email = document.getElementById('reg-email').value;
+            const password = document.getElementById('reg-password').value;
+            const confirm = document.getElementById('reg-confirm-password').value;
+            const errorDiv = document.getElementById('reg-error');
+            
+            if (password !== confirm || password.length < 8) {
+                errorDiv.classList.add('show');
+                return;
+            }
+            
+            // 检查邮箱是否已存在
+            if (users.find(u => u.email === email)) {
+                errorDiv.textContent = '该电子邮件地址已被使用';
+                errorDiv.classList.add('show');
+                return;
+            }
+            
+            // 创建用户
+            const newUser = {
+                email: email,
+                name: `${tempRegData.lastName} ${tempRegData.firstName}`,
+                password: password, // 演示用途，真实环境需加密
+                created: new Date().toISOString()
+            };
+            
+            users.push(newUser);
+            localStorage.setItem('demo_users', JSON.stringify(users));
+            
+            document.getElementById('success-message').textContent = `账户 ${email} 已创建成功！`;
+            showView('view-register-success');
+            renderSavedAccounts();
+        }
+
+        // 忘记账户处理
+        function handleForgot(e) {
+            e.preventDefault();
+            alert('演示模式：重置链接已发送到您的辅助邮箱（模拟）');
+            showView('view-login');
+        }
+
+        // 重置密码
+        function handlePasswordReset(e) {
+            e.preventDefault();
+            alert('演示模式：密码已更新（模拟）');
+            showView('view-login');
+        }
+    </script>
+</body>
+</html>
